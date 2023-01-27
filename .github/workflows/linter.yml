@@ -1,5 +1,4 @@
 name: 'Lint Code'
-name: 'Lint Code'
 
 on:  workflow_dispatch:
   push:
