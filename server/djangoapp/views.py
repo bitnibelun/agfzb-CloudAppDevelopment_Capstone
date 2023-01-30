@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarMake, CarModel, CarDealer
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, get_dealers_by_state_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -94,6 +94,15 @@ def get_dealer_details(request, dealer_id):
         dealer = get_dealer_reviews_from_cf(url, dealer_id)
 
         return HttpResponse(dealer)
+
+# Create a `get_dealer_by_state` view to render the dealerships from a particular state 
+def get_dealers_by_state(request, state):
+    if request.method == "GET":
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/dealership-get"
+        # Get dealer from the URL
+        dealers = get_dealers_by_state_from_cf(url, state)
+
+        return HttpResponse(dealers)
 
 # def get_dealer_details(request, d_id):
     

@@ -35,8 +35,6 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
     results_list = get_request(url)
-    print("JSON_RESULT: ", results_list)
-    print("JSON_RESULT size: ", len(results_list))
     del results_list[-1]
     if results_list:
 
@@ -44,7 +42,6 @@ def get_dealers_from_cf(url, **kwargs):
             # Get its content in `doc` object
             dealer = result["doc"]
             # Create a CarDealer object with values in `doc` object
-            print("1 DEALER: ", dealer)
             dealer_obj = CarDealer(address=dealer["address"],
                                    city=dealer["city"], full_name=dealer["full_name"],
                                    id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
@@ -62,8 +59,6 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     review_results = []
 
     results_list = get_request(url, dealerId=dealer_id)
-    print("JSON_RESULT: ", results_list)
-    print("JSON_RESULT size: ", len(results_list))
     del results_list[0]
     if results_list:
 
@@ -118,26 +113,22 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 #     return results
 
 #Get dealers by state
-def get_dealer_by_state_from_cf(url, state):
+def get_dealers_by_state_from_cf(url, state):
     results = []
     # Call get_request with a URL parameter
-    json_result = get_request(url, st = state)
+    results_list = get_request(url, st = state)
+    print("BY STATE: JSON_RESULT: ", results_list)
+    print("BY STATE: JSON_RESULT size: ", len(results_list))
+    if results_list:
 
-    if json_result:
-        # Get the row list in JSON as dealers
-        dealers = json_result["rows"]
-        del dealers[-1]
-        # For each dealer object
-
-        for dealer in dealers:
-            # Get its content in `doc` object
-            dealer_doc = dealer["doc"]
+        for dealer in results_list:
             # Create a CarDealer object with values in `doc` object
-            dealer_obj = CarDealer(address=dealer_doc["address"],
-                                   city=dealer_doc["city"], full_name=dealer_doc["full_name"],
-                                   id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-                                   short_name=dealer_doc["short_name"],
-                                   st=dealer_doc["st"], zip=dealer_doc["zip"])
+            print("BY STATE: DEALER VALUES: ", dealer)
+            dealer_obj = CarDealer(address=dealer["address"],
+                                   city=dealer["city"], full_name=dealer["full_name"],
+                                   id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
+                                   short_name=dealer["short_name"],
+                                   st=dealer["st"], zip=dealer["zip"])
             results.append(dealer_obj)
 
     return results
