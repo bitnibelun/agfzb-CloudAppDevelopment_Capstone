@@ -112,3 +112,36 @@ def get_dealer_by_state_from_cf(url, state):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def get_dealer_reviews_from_cf(url, dealer_id):
+    review_results = []
+
+    json_result = get_request(url, dealerId=dealer_id)
+
+    if json_result:
+
+        reviews = json_result["body"]["data"]["docs"]
+
+        for review in reviews:
+            dealership = review["dealership"]
+            name = review["name"]
+            purchase = review["purchase"]
+            review_id = review["_id"]
+            review_text = review["review"]
+            sentiment_wat = analyze_review_sentiments(review_text)
+
+            try:
+                purchase_date = review["purchase_date"]
+                car_make = review["car_make"]
+                car_model = review["car_model"]
+                car_year = review["car_year"]
+                review_object = DealerReview(dealership=dealership, name=name, purchase=purchase, review=review_text,
+                                          purchase_date=purchase_date, car_make=car_make, 
+                                          car_model=car_model, car_year=car_year, sentiment=sentiment_wat, r_id=review_id)
+            except KeyError:
+                review_object = DealerReview(dealership=dealership, name=name, purchase=purchase, review=review_text,
+                                          purchase_date=None, car_make=None, 
+                                          car_model=None, car_year=None, sentiment=sentiment_wat, r_id=review_id)
+                
+            review_results.append(review_object)
+
+    return review_results

@@ -78,7 +78,7 @@ def get_dealerships(request):
 # def get_dealerships(request):
 #     if request.method == "GET":
 #         context = {}
-#         url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/get-dealer-sequence"
+#         url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/get-dealer-sequence.json"
 #         dealerships = get_dealers_from_cf(url)
 #         context["dealership_list"] = dealerships
 #         return render(request, 'djangoapp/index.html', context)
@@ -86,6 +86,21 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
+def get_dealer_details(request, d_id):
+    
+    context = {}
+    
+    if request.method == "GET":
+        url = 'create-endpoint-url'
+        reviews_objects = get_dealer_reviews_from_cf(url, dealer_id=d_id)
+        
+        context = {
+            "reviews":  reviews_objects, 
+            "dealer_id": d_id
+        }
+
+        #better to have HTTP response?
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
