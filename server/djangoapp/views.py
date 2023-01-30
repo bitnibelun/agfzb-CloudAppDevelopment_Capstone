@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarMake, CarModel, CarDealer
-from .restapis import get_dealers_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -68,13 +68,14 @@ def registration_request(request):
 #         return render(request, 'djangoapp/index.html', context)
 def get_dealerships(request):
     if request.method == "GET":
-        url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/get-dealer-sequence.json"
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/dealership-get"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
         return HttpResponse(dealer_names)
+
 # def get_dealerships(request):
 #     if request.method == "GET":
 #         context = {}
@@ -86,21 +87,29 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
-def get_dealer_details(request, d_id):
-    
-    context = {}
-    
+def get_dealer_details(request, dealer_id):
     if request.method == "GET":
-        url = 'create-endpoint-url'
-        reviews_objects = get_dealer_reviews_from_cf(url, dealer_id=d_id)
-        
-        context = {
-            "reviews":  reviews_objects, 
-            "dealer_id": d_id
-        }
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/review-package/review-get"
+        # Get dealer from the URL
+        dealer = get_dealer_reviews_from_cf(url, dealer_id)
 
-        #better to have HTTP response?
-        return render(request, 'djangoapp/dealer_details.html', context)
+        return HttpResponse(dealer)
+
+# def get_dealer_details(request, d_id):
+    
+#     context = {}
+    
+#     if request.method == "GET":
+#         url = 'create-endpoint-url'
+#         reviews_objects = get_dealer_reviews_from_cf(url, d_id)
+        
+#         context = {
+#             "reviews":  reviews_objects, 
+#             "dealer_id": d_id
+#         }
+
+#         #better to have HTTP response?
+#         return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
