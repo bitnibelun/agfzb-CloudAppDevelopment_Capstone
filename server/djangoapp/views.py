@@ -104,23 +104,42 @@ def get_dealers_by_state(request, state):
 
         return HttpResponse(dealers)
 
-# def get_dealer_details(request, d_id):
-    
-#     context = {}
-    
-#     if request.method == "GET":
-#         url = 'create-endpoint-url'
-#         reviews_objects = get_dealer_reviews_from_cf(url, d_id)
-        
-#         context = {
-#             "reviews":  reviews_objects, 
-#             "dealer_id": d_id
-#         }
-
-#         #better to have HTTP response?
-#         return render(request, 'djangoapp/dealer_details.html', context)
-
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            url = f"https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/review-package/review-get?dealerId={dealer_id}"
+            context = {
+                "cars": CarModel.objects.all(),
+                "dealer": get_dealer_by_id_from_cf(url, dealer_id = dealer_id),
+            }
+            return render(request, 'djangoapp/add_review.html', context)
 
+        if request.method == "POST":
+            review = {}
+            from_form = request.POST
+            car = CarModel.objects.get(pk = from_form["car"])
+
+            review["car_make"] = car.car_make.name
+            review["car_model"] = car.name
+            review["car_year"] = car.year
+            review["dealership"] = dealer_id
+            review["name"] = f"{request.user.first_name} {request.user.last_name}"
+            review["purchase"] = from_form.get("purchase_details")
+            review["review"] = from_form["review_content"]
+
+            if from_form.get("purchase_details"):
+                review["purchase_date"] = datetime.strptime(from_form.get("purchase_date"), "%m/%d/%Y").isoformat()
+            else: 
+                review["purchase_date"] = None
+
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/review-package/review-post"  
+            json_payload = {"review": review}  
+
+            result = post_request(url, json_payload, dealerId = dealer_id)
+
+            return redirect("djangoapp:dealer_details", dealer_id = dealer_id)
+
+    else:
+        return redirect("/djangoapp/login")

@@ -24,8 +24,14 @@ def get_request(url, **kwargs):
 
 
 # Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+    response = None
+    try:
+        response = requests.post(url, json = payload, params = kwargs)
+    except:
+        print("exception when posting request")
 
+    return response
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -35,7 +41,6 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
     results_list = get_request(url)
-    del results_list[-1]
     if results_list:
 
         for result in results_list:
@@ -59,9 +64,9 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     review_results = []
 
     results_list = get_request(url, dealerId=dealer_id)
-    del results_list[0]
-    if results_list:
 
+    if results_list:
+        
         for result in results_list:
             # Get its content in `doc` object
             review = result["doc"]
@@ -77,40 +82,31 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 car_make = review["car_make"]
                 car_model = review["car_model"]
                 car_year = review["car_year"]
-                review_object = DealerReview(r_id=review_id, dealership=dealership, name=name, purchase=purchase, review=review_text,
+                review_obj = DealerReview(r_id=review_id, dealership=dealership, name=name, purchase=purchase, review=review_text,
                                           purchase_date=purchase_date, car_make=car_make, 
                                           car_model=car_model, car_year=car_year, sentiment=sentiment_wat)
             except KeyError:
-                review_object = DealerReview(r_id=review_id, dealership=dealership, name=name, purchase=purchase, review=review_text,
+                review_obj = DealerReview(r_id=review_id, dealership=dealership, name=name, purchase=purchase, review=review_text,
                                              sentiment=sentiment_wat)
                 
-            review_results.append(review_object)
+            review_results.append(review_obj)
 
     return review_results
 
-# def get_dealer_reviews_from_cf(url, dealer_id):
-#     results = []
-#     # Call get_request with a URL parameter
-#     json_result = get_request(url, dealerId = dealer_id)
+# Get dealers by id
+def get_dealer_by_id_from_cf(url, dealer_id):
+    json_result = get_request(url, dealerId = dealer_id)
 
-#     if json_result:
-#         # Get the row list in JSON as dealers
-#         dealers = json_result["rows"]
-#         #del dealers[-1]
-#         # For each dealer object
+    if json_result:
+        dealer = json_result["entries"][0]
+        dealer_obj = CarDealer(address=dealer["address"],
+            city=dealer["city"], full_name=dealer["full_name"],
+            id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
+            short_name=dealer["short_name"],
+            st=dealer["st"], zip=dealer["zip"])
 
-#         for dealer in dealers:
-#             # Get its content in `doc` object
-#             dealer_doc = dealer["doc"]
-#             # Create a CarDealer object with values in `doc` object
-#             dealer_obj = CarDealer(address=dealer_doc["address"],
-#                                    city=dealer_doc["city"], full_name=dealer_doc["full_name"],
-#                                    id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-#                                    short_name=dealer_doc["short_name"],
-#                                    st=dealer_doc["st"], zip=dealer_doc["zip"])
-#             results.append(dealer_obj)
+    return dealer_obj
 
-#     return results
 
 #Get dealers by state
 def get_dealers_by_state_from_cf(url, state):
