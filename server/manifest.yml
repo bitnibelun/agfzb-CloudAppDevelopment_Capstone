@@ -9,3 +9,5 @@
       - route: $HOST.$DOMAIN/static
     memory: 128M
     buildpack: staticfile_buildpack
+    
+    
