@@ -55,11 +55,12 @@
 
     <!-- Add reviews as cards -->
     {% if reviews %}
+        <div><label><b>Reviews for: {{dealer_name}}</b></label></br></br></div>
         <div class="card-columns">
             {% for review in reviews %}
                 {% if review.car_make %}
-                <div class="card" style="height: 300px; overflow: scroll; overflow-x: hidden;">
-                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 50px; width: 50px; display: inline-block;"></br></br>
+                <div class="card" style="height: 200px; width 200px; overflow: scroll; overflow-x: hidden;">
+                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 36px; width: 36px; display: inline-block;"></br></br>
                     <div class="card-body" style="text-align: left;">
                         <label class="card-title" style="display: inline-block;">{{ review.car_make }}, {{ review.car_model }}</label></br>
                         <label class="card-title">{{ review.car_year }}</label>
@@ -67,8 +68,8 @@
                     </div>
                 </div>
                 {% else %}
-                <div class="card" style="height: 300px; overflow: scroll; overflow-x: hidden;">
-                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 50px; width: 50px; display: inline-block;"></br></br>
+                <div class="card" style="height: 200px; width 200px; overflow: scroll; overflow-x: hidden;">
+                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 36px; width: 36px; display: inline-block;"></br></br>
                     <div class="card-body" style="text-align: left;">
                         <label class="card-title" style="display: inline-block;">Review</label></br>
                         <label class="card-title"></label>
@@ -82,7 +83,7 @@
         <p></br>This dealership hasn't been reviewed yet. Be the first one to leave a review!</br></p>
         {% if user.is_authenticated %}
             <div style="margin: 10px;">
-                <a class="btn btn-primary" href="{% url 'djangoapp:add_review' dealer_id %}"><b>Write Review</b></a>
+                <a class="btn btn-primary" href="{% url 'djangoapp:add_review' dealer_id %}">Write Review</a>
             </div>
         {% endif %}
     {% endif %}

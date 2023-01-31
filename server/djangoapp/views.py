@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarMake, CarModel, CarDealer
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, get_dealers_by_state_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, get_dealers_by_state_from_cf, get_dealer_by_id_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -82,9 +82,12 @@ def get_dealer_details(request, dealer_id):
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/review-package/review-get"
         # Get dealer from the URL
         dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        dealer = get_dealer_by_id(dealer_id)
+
         context = {
             "reviews":  dealer_reviews, 
-            "dealer_id": dealer_id
+            "dealer_id": dealer_id,
+            "dealer_name" : dealer.full_name
         }
 
         return render(request, 'djangoapp/dealer_details.html', context)
@@ -100,12 +103,17 @@ def get_dealers_by_state(request, state):
 
         return render(request, 'djangoapp/index.html', context)
 
+def get_dealer_by_id(dealer_id):
+    url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/dealership-get"
+    # Get dealer from the URL
+    return get_dealer_by_id_from_cf(url, dealer_id = dealer_id)
+
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     
     if request.user.is_authenticated:
         if request.method == "GET":
-            url = f"https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/review-package/review-get?dealerId={dealer_id}"
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/b611b81f-938e-43c4-965c-f566c4721a29/dealership-package/dealership-get"
             context = {
                 "cars": CarModel.objects.all(),
                 "dealer": get_dealer_by_id_from_cf(url, dealer_id = dealer_id),
