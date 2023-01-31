@@ -19,7 +19,7 @@
             </div>
             {% if user.is_authenticated %}
             <div>
-                <a class="btn btn-primary"  href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
+                <a class="btn btn-primary"  href="{% url 'djangoapp:add_review' dealer_id %}">Add Review</a>
             </div>
             <div id="navbarNav">
                 <form class="form-inline">
@@ -80,7 +80,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p></br>This dealership hasn't been reviewed yet. Be the first one to leave a review!</br></p>
+        <p></br>{{dealer_name}} hasn't been reviewed yet. Be the first one to leave a review!</br></p>
         {% if user.is_authenticated %}
             <div style="margin: 10px;">
                 <a class="btn btn-primary" href="{% url 'djangoapp:add_review' dealer_id %}">Write Review</a>

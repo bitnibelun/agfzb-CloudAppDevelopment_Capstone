@@ -33,9 +33,9 @@ def get_request(url, **kwargs):
 def post_request(url, json_payload, **kwargs):
     response = None
     try:
-        response = requests.post(url, json = payload, params = kwargs)
-    except:
-        print("API: exception when posting request")
+        response = requests.post(url, json = json_payload, params = kwargs)
+    except Exception as e:
+        print("API: exception when posting request: ", e)
 
     return response
 
@@ -46,6 +46,7 @@ def post_request(url, json_payload, **kwargs):
 def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
+
     results_list = get_request(url)
     if results_list:
 
@@ -101,6 +102,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 
 # Get dealer by id
 def get_dealer_by_id_from_cf(url, dealer_id):
+
     dealer = get_request(url, dealerId = dealer_id)
 
     if dealer:
@@ -116,6 +118,7 @@ def get_dealer_by_id_from_cf(url, dealer_id):
 #Get dealers by state
 def get_dealers_by_state_from_cf(url, state):
     results = []
+
     results_list = get_request(url, st = state)
     if results_list:
         for dealer in results_list:
