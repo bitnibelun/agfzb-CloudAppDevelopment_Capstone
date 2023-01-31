@@ -58,7 +58,30 @@
     </nav>
     <label>Dealership Reviews</label>
     <!--Add a dealer table here -->
-
+        <table class="table" id="table">
+            <thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="id">Dealer Name</th>
+                    <th data-field="id">City</th>
+                    <th data-field="id">Address</th>
+                    <th data-field="id">Zip</th>
+                    <th data-field="id">State</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dealer in dealership_list %}
+                    <tr>
+                        <td>{{dealer.id}}</td>
+                        <td>{{dealer.name}}</td>
+                        <td>{{dealer.city}}</td>
+                        <td>{{dealer.address}}</td>
+                        <td>{{dealer.zip}}</td>
+                        <td>{{dealer.st}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </body>
 
 </html>

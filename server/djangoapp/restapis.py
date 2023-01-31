@@ -147,24 +147,24 @@ def analyze_review_sentiments(dealerreview):
         #In the method, 
         #make a call to the updated get_request(url, **kwargs) 
         #method with following parameters:"
-        """
+    """
         params = dict()
         params["text"] = kwargs["text"]
         params["version"] = kwargs["version"]
         params["features"] = kwargs["features"]
         params["return_analyzed_text"] = kwargs["return_analyzed_text"]
         response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
-                                            auth=HTTPBasicAuth('apikey', api_key))
-        """
-    try:
-        if os.environ['env_type'] == 'PRODUCTION':
-            url = os.environ['COUCH_URL']
-            api_key = os.environ["IAM_API_KEY"]
-    except:
-        url = config('COUCH_URL')
-        api_key = config('IAM_API_KEY')
+        auth=HTTPBasicAuth('apikey', api_key))
+    """
+    # try:
+    #     if os.environ['env_type'] == 'PRODUCTION':
+    #         url = os.environ['COUCH_URL']
+    #         api_key = os.environ["IAM_API_KEY"]
+    # except:
+    #     url = config('COUCH_URL')
+    #     api_key = config('IAM_API_KEY')
 
-    version = '2021-08-01'
+    version = '2021-08-01' #5.2.2
     authenticator = IAMAuthenticator(api_key)
     nat = NaturalLanguageUnderstandingV1(version = version, authenticator = authenticator)
     nat.set_service_url(url)
