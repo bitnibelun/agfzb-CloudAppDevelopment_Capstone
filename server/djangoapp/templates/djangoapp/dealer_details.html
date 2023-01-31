@@ -16,12 +16,10 @@
                 <a class="nav-item nav-link" href="">Home</a>
                 <a class="nav-item nav-link" href="about">About Us</a>
                 <a class="nav-item nav-link" href="contact">Contact Us</a>
-                <a href="{% url 'djangoapp:add_review' dealer.id %}"  method="get">Add Review</a>
-                
             </div>
             {% if user.is_authenticated %}
             <div>
-                <a href="{% url 'djangoapp:add_review' dealer.id %}"  method="get">Add Review</a>
+                <a class="btn btn-primary"  href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
             </div>
             <div id="navbarNav">
                 <form class="form-inline">
@@ -56,8 +54,38 @@
     </nav>
 
     <!-- Add reviews as cards -->
-    <div class="card-columns">
-    </div>
+    {% if reviews %}
+        <div class="card-columns">
+            {% for review in reviews %}
+                {% if review.car_make %}
+                <div class="card" style="height: 300px; overflow: scroll; overflow-x: hidden;">
+                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 50px; width: 50px; display: inline-block;"></br></br>
+                    <div class="card-body" style="text-align: left;">
+                        <label class="card-title" style="display: inline-block;">{{ review.car_make }}, {{ review.car_model }}</label></br>
+                        <label class="card-title">{{ review.car_year }}</label>
+                        <p class="card-text" style="text-align: left;">{{ review.review }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card" style="height: 300px; overflow: scroll; overflow-x: hidden;">
+                    <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="float: left; height: 50px; width: 50px; display: inline-block;"></br></br>
+                    <div class="card-body" style="text-align: left;">
+                        <label class="card-title" style="display: inline-block;">Review</label></br>
+                        <label class="card-title"></label>
+                        <p class="card-text" style="text-align: left;">{{ review.review }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p></br>This dealership hasn't been reviewed yet. Be the first one to leave a review!</br></p>
+        {% if user.is_authenticated %}
+            <div style="margin: 10px;">
+                <a class="btn btn-primary" href="{% url 'djangoapp:add_review' dealer_id %}"><b>Write Review</b></a>
+            </div>
+        {% endif %}
+    {% endif %}
     </body>
 
 </html>
