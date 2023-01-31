@@ -144,6 +144,18 @@ def get_dealers_by_state_from_cf(url, state):
 def analyze_review_sentiments(dealerreview):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+        #In the method, 
+        #make a call to the updated get_request(url, **kwargs) 
+        #method with following parameters:"
+        """
+        params = dict()
+        params["text"] = kwargs["text"]
+        params["version"] = kwargs["version"]
+        params["features"] = kwargs["features"]
+        params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+        response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+                                            auth=HTTPBasicAuth('apikey', api_key))
+        """
     try:
         if os.environ['env_type'] == 'PRODUCTION':
             url = os.environ['COUCH_URL']
