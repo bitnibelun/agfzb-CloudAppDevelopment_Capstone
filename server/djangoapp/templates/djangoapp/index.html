@@ -22,9 +22,10 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="">Home</a>
                 <a class="nav-item nav-link" href="about">About Us</a>
-                <a class="nav-item nav-link" href="contact">Contact Us</a>
+                <a class="nav-item nav-link" href="contact">Contact Us</a>  
             </div>
             {% if user.is_authenticated %}
+
             <div id="navbarNav">
                 <form class="form-inline">
                     {% csrf_token %}
@@ -70,10 +71,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for dealer in dealership_list %}
+                {% for dealer in dealerships %}
                     <tr>
                         <td>{{dealer.id}}</td>
-                        <td>{{dealer.name}}</td>
+                        <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{dealer.full_name}}</a></td>
                         <td>{{dealer.city}}</td>
                         <td>{{dealer.address}}</td>
                         <td>{{dealer.zip}}</td>

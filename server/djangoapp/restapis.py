@@ -164,18 +164,19 @@ def analyze_review_sentiments(dealerreview):
     #     url = config('COUCH_URL')
     #     api_key = config('IAM_API_KEY')
 
-    version = '2021-08-01' #5.2.2
-    authenticator = IAMAuthenticator(api_key)
-    nat = NaturalLanguageUnderstandingV1(version = version, authenticator = authenticator)
-    nat.set_service_url(url)
+    # version = '2021-08-01' #5.2.2
+    # authenticator = IAMAuthenticator(api_key)
+    # nat = NaturalLanguageUnderstandingV1(version = version, authenticator = authenticator)
+    # nat.set_service_url(url)
 
-    try:
-        response = nat.analyze(text = dealerreview,
-                               features = Features
-                               (sentiment = SentimentOptions())).get_result()
+    # try:
+    #     response = nat.analyze(text = dealerreview,
+    #                            features = Features
+    #                            (sentiment = SentimentOptions())).get_result()
 
-        sentiment = response["sentiment"]["document"]["label"]
-    except:
-        sentiment = "neutral"
+    #     sentiment = response["sentiment"]["document"]["label"]
+    # except:
+    #     sentiment = "neutral"
 
-    return sentiment
+    # return sentiment
+    return "Happy bro"

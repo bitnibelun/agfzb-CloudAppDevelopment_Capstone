@@ -10,9 +10,54 @@
     <body>
 
     <!--Add a nav bar here -->
-    <label>Dealer_details: Fix this file</label>
-    <!-- Add reviews as cards -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="">Home</a>
+                <a class="nav-item nav-link" href="about">About Us</a>
+                <a class="nav-item nav-link" href="contact">Contact Us</a>
+                <a href="{% url 'djangoapp:add_review' dealer.id %}"  method="get">Add Review</a>
+                
+            </div>
+            {% if user.is_authenticated %}
+            <div>
+                <a href="{% url 'djangoapp:add_review' dealer.id %}"  method="get">Add Review</a>
+            </div>
+            <div id="navbarNav">
+                <form class="form-inline">
+                    {% csrf_token %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <a class="text-ligh" href="#">{{ user.username }}</a>
+                            </div>
+                            <div class="col-sm">
+                                <a class="text-ligh" href="{% url 'djangoapp:logout' %}">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div id="navbarNav">
+                <form class="form-inline">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Username" name="username">
+                        <input class="form-control mr-sm-2" type="password" placeholder="Password" name="password">
+                       <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button> -->
+                        <a class="btn btn-outline-primary my-2 my-sm-0" style="font-size:15px" href="{% url 'djangoapp:login' %}">Log in</a>
+                        <a class="btn btn-outline-primary my-2 my-sm-0" style="font-size:15px" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
 
+    <!-- Add reviews as cards -->
+    <div class="card-columns">
+    </div>
     </body>
 
 </html>
