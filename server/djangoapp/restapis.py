@@ -7,19 +7,35 @@ from requests.auth import HTTPBasicAuth
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #   auth=HTTPBasicAuth('apikey', api_key))
-def get_request(url, **kwargs):
+def get_request(url, api_key = False, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
-    try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs)
-    except:
-        # If any error occurs
-        print("Network exception occurred")
+
+    if api_key:
+        # Basic authentication GET
+        try:
+            params = dict()
+            params["text"] = kwargs["text"]
+            params["version"] = kwargs["version"]
+            params["features"] = kwargs["features"]
+            params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                params=params, auth=HTTPBasicAuth('apikey', api_key))
+        except:
+            print("Network exception occurred in: Basic authentication GET")
+    else:
+        # No authentication GET
+        try:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                params=kwargs)
+        except:
+            # If any error occurs
+            print("Network exception occurred in: No authentication GET")
+
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
+
     return json_data
 
 
@@ -111,15 +127,10 @@ def get_dealer_by_id_from_cf(url, dealer_id):
 #Get dealers by state
 def get_dealers_by_state_from_cf(url, state):
     results = []
-    # Call get_request with a URL parameter
     results_list = get_request(url, st = state)
-    print("BY STATE: JSON_RESULT: ", results_list)
-    print("BY STATE: JSON_RESULT size: ", len(results_list))
     if results_list:
-
         for dealer in results_list:
             # Create a CarDealer object with values in `doc` object
-            print("BY STATE: DEALER VALUES: ", dealer)
             dealer_obj = CarDealer(address=dealer["address"],
                                    city=dealer["city"], full_name=dealer["full_name"],
                                    id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
@@ -130,7 +141,29 @@ def get_dealers_by_state_from_cf(url, state):
     return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-def analyze_review_sentiments(text):
+def analyze_review_sentiments(dealerreview):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-    return "analyzer needs implementation!"
+    try:
+        if os.environ['env_type'] == 'PRODUCTION':
+            url = os.environ['COUCH_URL']
+            api_key = os.environ["IAM_API_KEY"]
+    except:
+        url = config('COUCH_URL')
+        api_key = config('IAM_API_KEY')
+
+    version = '2021-08-01'
+    authenticator = IAMAuthenticator(api_key)
+    nat = NaturalLanguageUnderstandingV1(version = version, authenticator = authenticator)
+    nat.set_service_url(url)
+
+    try:
+        response = nat.analyze(text = dealerreview,
+                               features = Features
+                               (sentiment = SentimentOptions())).get_result()
+
+        sentiment = response["sentiment"]["document"]["label"]
+    except:
+        sentiment = "neutral"
+
+    return sentiment
